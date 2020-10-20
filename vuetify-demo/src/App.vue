@@ -8,19 +8,9 @@
       <span class="mr-2">Latest Release</span>
     </v-app-bar>
     <v-main>
-      <div id="content" style="min-height: 100%; max-height: 100%;">
-        <v-row no-gutters class="dialog">
-          <v-col
-            cols="8"
-          >.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8</v-col>
-          <v-col cols="4"></v-col>
-        </v-row>
-        <v-row no-gutters class="dialog">
-          <v-col cols="4"></v-col>
-          <v-col
-            cols="8"
-          >.col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8.col-12 .col-sm-6 .col-md-8</v-col>
-        </v-row>
+      <div id="content" class="scroll-y" style="min-height: 100%; max-height: 100%;">
+        <Dialog v-for="(value, index) in messages" :key="index" :msg="value"></Dialog>
+        <v-layout v-scroll:#content="onScroll" style="height: 1000px;"></v-layout>
       </div>
     </v-main>
     <v-footer dark color="primary" app>
@@ -33,25 +23,52 @@
         hide-details="true"
       >
         <template v-slot:append>
-          <v-icon size="24px">{{ icon }}</v-icon>
+          <v-icon size="24px" @click="sendMsg">{{ icon }}</v-icon>
         </template>
       </v-text-field>
     </v-footer>
   </v-app>
 </template>
 
-<style scoped>
-.dialog {
-  margin: 20px 8px;
-}
-</style>
-
 <script>
+import Dialog from "./components/Dialog.vue";
+
 export default {
   name: "App",
+  components: {
+    Dialog: Dialog
+  },
   data: () => ({
     message: "Hey!",
-    icon: "mdi-facebook"
-  })
+    icon: "mdi-facebook",
+    messages: [
+      {
+        isPeer: false,
+        text: "hey! how are you?"
+      },
+      {
+        isPeer: true,
+        text: "fine, and you?"
+      },
+      {
+        isPeer: false,
+        text: "666"
+      }
+    ]
+  }),
+  methods: {
+    sendMsg() {
+      let msg = {
+        isPeer: false,
+        text: this.message
+      };
+
+      this.messages.push(msg);
+    },
+    onScroll(e) {
+      console.log(e);
+      this.offsetTop = e.target.scrollTop;
+    }
+  }
 };
 </script>

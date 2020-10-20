@@ -1,4 +1,4 @@
-# black
+# vuetify-demo
 
 ## Project setup
 ```
