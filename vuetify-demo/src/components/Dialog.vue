@@ -55,14 +55,10 @@ export default {
       // offer
       this.channel = new Peer({
         initiator: this.initiator,
-        config: {
-          iceServers: [
-            { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun1.voiceeclipse.net:3478" },
-            { urls: "stun:stun2.l.google.com:19302" },
-          ]
-        }
+        trickle: false,
       });
+
+      this.channel._debug = console.log
 
       // exchange signal
       this.channel.on("signal", data => {
@@ -81,7 +77,7 @@ export default {
           }
 
           this.onSendSignal(act, this.initiator, this.peer, data);
-          this.timerId = setInterval(this.onGetChatStatus, 2000);
+          this.timerId = setInterval(this.onGetChatStatus, 5000);
         }
       });
 
@@ -90,13 +86,27 @@ export default {
         console.log("connect to peer successfully");
         // backend mark as connected
         this.onSendSignal(5, this.initiator, this.peer, "");
+        this.channel.send('whatever' + Math.random());
       });
 
+      this.channel.on('data', data => {
+        console.log('data: ' + data);
+        let msg = {
+          isPeer: true,
+          text: data
+        };
+
+        this.messages.push(msg);
+      })
       // generate answer signal by offer signal
       if (this.initiator == false) {
-        console.log("generate answer signal");
+        console.log("generate answer signal", JSON.parse(signal));
         this.channel.signal(JSON.parse(signal));
       }
+
+      this.channel.on('error', (err) => {
+        console.log("channel error: ", err);
+      })
     }
   },
   data: () => ({
@@ -129,6 +139,7 @@ export default {
       };
 
       this.messages.push(msg);
+      this.channel.send(this.message);
     },
     onSendSignal(act, initiator, peer, signal) {
       let params = {
@@ -162,6 +173,8 @@ export default {
       );
     },
     onGetChatStatusSucc(data, params) {
+      console.log("onGetChatStatusSucc", data, params);
+
       // ChatStateReceivedAnswer
       if (data.Initiator == true && data.State == 3) {
         // using answer signal
@@ -173,8 +186,6 @@ export default {
       if (data.State == 6) {
         clearInterval(this.timerId);
       }
-
-      console.log(data, params);
     },
     onGetChatStatusFail(error, params) {
       console.log(error, params);

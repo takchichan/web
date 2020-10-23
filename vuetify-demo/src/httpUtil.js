@@ -8,19 +8,19 @@ export default {
     },
     post(uri, args, succ, fail) {
         axios.post(uri, JSON.stringify(args), { withCredentials: true }).then((response) => {
-            console.log("%s\n%s", uri, JSON.stringify(response.data));
+            // console.log("%s\n%s", uri, JSON.stringify(response.data));
             succ(response.data, args);
         }).catch((error) => {
-            console.log("%s\n%s", uri, JSON.stringify(error))
+            // console.log("%s\n%s", uri, JSON.stringify(error))
             fail(error, args);
         })
     },
     get(uri, args, succ, fail) {
         axios.get(uri, { params: args, withCredentials: true }).then(function (response) {
-            console.log("%s\n%s", uri, JSON.stringify(response.data));
+            // console.log("%s\n%s", uri, JSON.stringify(response.data));
             succ(response.data, args);
         }).catch(function (error) {
-            console.log("%s\n%s", uri, JSON.stringify(error))
+            // console.log("%s\n%s", uri, JSON.stringify(error))
             fail(error, args);
         });
     },
