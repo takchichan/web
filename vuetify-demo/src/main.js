@@ -5,6 +5,8 @@ import vuetify from './plugins/vuetify';
 import router from "./router.js";
 import httpUtil from './httpUtil.js';
 
+import './style.css'
+
 Vue.config.productionTip = false;
 
 Vue.prototype.$httpUtil = httpUtil;
