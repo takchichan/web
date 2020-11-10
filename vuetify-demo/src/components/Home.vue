@@ -40,64 +40,10 @@
 <script>
 export default {
   name: "Home",
-  created() {
-    this.timerId = setInterval(this.onGetChatStatus, 10000);
-    this.onGetUsrList();
-  },
-  destroyed() {
-    clearInterval(this.timerId);
-  },
   data: () => ({
-    timerId: -1,
     usrs: []
   }),
   methods: {
-    onGetChatStatus() {
-      let params = {
-        nickName: "唐师傅",
-        location: "混沌星球",
-      };
-
-      this.$httpUtil.get(
-        this.$httpUtil.uri.chat,
-        params,
-        this.onGetChatStatusSucc,
-        this.onGetChatStatusFail
-      );
-    },
-    onGetChatStatusSucc(data, params) {
-      // 如果是被邀请，则将offer填入signal函数，产生answer
-      console.log(data, params);
-
-      // ChatStateWaitForSendingAnswer
-      if(data.Initiator == false && data.State == 4) {
-        this.$router.push({path: ('/dialog?peer=' + data.Peer + "&initiative=false&signal=" + data.Offer)});
-      }
-    },
-    onGetChatStatusFail(error, params) {
-      console.log(error, params);
-    },
-    onGetUsrList() {
-      let params = {};
-
-      this.$httpUtil.get(
-        this.$httpUtil.uri.usr,
-        params,
-        this.onGetUsrListSucc,
-        this.onGetUsrListFail
-      );
-    },
-    onGetUsrListSucc(data, params) {
-      console.log(data, params);
-      this.usrs = data;
-    },
-    onGetUsrListFail(error, params) {
-      console.log(error, params);
-    },
-    clickUsr(usr) {
-      console.log(usr);
-      this.$router.push({path: ('/dialog?peer=' + usr.nickName + "&initiative=true")});
-    }
   }
 };
 </script>
